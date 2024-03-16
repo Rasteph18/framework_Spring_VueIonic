@@ -1,0 +1,81 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6 offset-3">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Liste de [classNameMin]</h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            [viewTableHeader]
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each=" e: ${o}">
+                                [viewTableLine]
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        th:data-bs-target="'#modifiermodal'+${e.get[primaryNameMaj]()}">
+                                        <p><i class="bi bi-pencil"></i>Modifier</p>
+                                    </button>
+                                    <div class="modal fade" th:id="'modifiermodal'+${e.get[primaryNameMaj]()}" tabindex="-1"
+                                        aria-labelledby="modifiermodalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <form action="/update[classNameMin].do" method="post">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="modifiermodalLabel">Modifier un
+                                                            [classNameMin]</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="[primaryNameMin]" th:value="${e.get[primaryNameMaj]()}">
+                                                        [viewUpdateFormField]
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Valider</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <form action="/delete[classNameMin].do" method="post">
+                                        <input type="hidden" name="[primaryNameMin]" th:value="${e.get[primaryNameMaj]()}">
+                                        <button type="submit" class="btn btn-danger">
+                                            <p><i class="bi bi-trash"></i>Supprimer</p>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajoutmodal">
+                    <p><i class="bi bi-plus"></i>Ajouter</p>
+                </button>
+            </div>
+        </div>
+        <!-- Button modal ajout -->
+
+        <!-- Modal Ajout -->
+        <div class="modal fade" id="ajoutmodal" tabindex="-1" aria-labelledby="ajoutmodalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="/insert[classNameMin].do" method="post">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="ajoutmodalLabel">Ajouter un [classNameMin]</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            [viewInsertFormField]
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Valider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

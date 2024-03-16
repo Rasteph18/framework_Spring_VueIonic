@@ -1,0 +1,6 @@
+<div class="mb-3">
+    <label for="[fieldNameMin]input" class="form-label">[fieldNameMaj]</label>
+    <input type="date" class="form-control" id="[fieldNameMin]input"
+        aria-describedby="[fieldNameMin]help" name="[fieldNameMin]"
+        th:value="${e.get[fieldNameMaj]()}">
+</div>

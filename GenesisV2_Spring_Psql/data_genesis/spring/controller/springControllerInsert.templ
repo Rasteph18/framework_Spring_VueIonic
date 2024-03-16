@@ -1,0 +1,6 @@
+public RedirectView insert([controllerMethodParameter]){
+    [classNameMaj] o=new [classNameMaj]();
+    [controllerChangeInstanciation]
+    repo.save(o);
+    return new RedirectView("tocrud[classNameMin].do");
+}

@@ -1,0 +1,4 @@
+public RedirectView delete([primaryType] [primaryNameMin]){
+    repo.deleteById([primaryNameMin]);
+    return new RedirectView("tocrud[classNameMin].do");
+}

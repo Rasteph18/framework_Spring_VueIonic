@@ -1,0 +1,6 @@
+public String crudpage(Model model){
+    model.addAttribute("o", repo.findAll());
+    model.addAttribute("viewpage", "[classNameMin]");
+    [controllerForeignList]
+    return "layout/layout";
+}

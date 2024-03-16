@@ -1,0 +1,183 @@
+[
+    {
+        "id":2,
+        "nom":"Spring with PostgreSQL",
+        "syntax":{
+            "namespace":"package",
+            "namespaceStart":";",
+            "namespaceEnd":""
+        },
+        "types":{
+            "int":"Integer",
+            "double":"Double",
+            "string":"String",
+            "date":"java.time.LocalDate",
+            "timestamp":"java.time.LocalDateTime"
+        },
+        "typeParsers":{
+            "Integer":"Integer.parseInt([value])",
+            "Double":"Double.parseDouble([value])",
+            "String":"[value]",
+            "java.time.LocalDate":"java.time.LocalDate.parse([value])",
+            "java.time.LocalDateTime":"java.time.LocalDateTime.parse([value])"
+        },
+        "skeleton":"springpsql_skeleton",
+        "projectNameTags":[
+            "[projectNameMaj]/settings.gradle",
+            "[projectNameMaj]/src/main/resources/templates/layout/layout.html",
+            "[projectNameMaj]/src/main/resources/application.properties"
+        ],
+        "additionnalFiles":[],
+        "model":{
+            "modelImports":[
+                "import jakarta.persistence.Entity;",
+                "import jakarta.persistence.Column;",
+                "import jakarta.persistence.GeneratedValue;",
+                "import jakarta.persistence.GenerationType;",
+                "import jakarta.persistence.Id;"
+            ],
+            "modelExtends":"",
+            "modelAnnotations":[
+                "@Entity"
+            ],
+            "modelPrimaryFieldAnnotations":[
+                "@Id",
+                "@GeneratedValue(strategy=GenerationType.AUTO)"
+            ],
+            "modelForeignFieldAnnotations":[
+                "@jakarta.persistence.ManyToOne",
+                "@jakarta.persistence.JoinColumn(name=\"[columnName]\")"
+            ],
+            "modelFieldAnnotations":[],
+            "modelFieldCase":"Min",
+            "modelFieldContent":"private [fieldType] [columnName];",
+            "modelGetter":"public [fieldType] get[fieldNameMaj](){ return [columnName]; }",
+            "modelSetter":"public void set[fieldNameMaj]([fieldType] o){ [columnName]=o; }",
+            "modelConstructors":[],
+            "modelSavePath":"[projectNameMaj]/src/main/java/com/[projectNameMin]/entities",
+            "modelAdditionnalFiles":[
+                {
+                    "name":"[classNameMaj]Repository.java",
+                    "content":"spring/Repository.templ"
+                }
+            ],
+            "modelExtension":"java",
+            "modelPackage":"com.[projectNameMin].entities",
+            "modelTemplate":"ModelTemplate"
+        },
+        "controller":{
+            "controllerImports":[
+                "import org.springframework.beans.factory.annotation.Autowired;",
+                "import org.springframework.stereotype.Controller;",
+                "import org.springframework.ui.Model;",
+                "import org.springframework.web.bind.annotation.GetMapping;",
+                "import org.springframework.web.bind.annotation.PostMapping;",
+                "import org.springframework.web.servlet.view.RedirectView;",
+                "import com.[projectNameMin].entities.[classNameMaj];",
+                "import com.[projectNameMin].entities.[classNameMaj]Repository;"
+            ],
+            "controllerAnnotations":[
+                "@Controller"
+            ],
+            "controllerExtends":"",
+            "controllerName":"[classNameMaj]Controller",
+            "controllerFields":[
+                {
+                    "controllerFieldAnnotations":[
+                        "@Autowired"
+                    ],
+                    "controllerFieldContent":"private [classNameMaj]Repository repo;"
+                }
+            ],
+            "controllerFieldsForeign":{
+                "controllerFieldAnnotations":[
+                    "@Autowired"
+                ],
+                "controllerFieldContent":"private com.[projectNameMin].entities.[foreignNameMaj]Repository repo[foreignNameMaj];"
+            },
+            "controllerChangeInstanciation":{
+                "template":"o.set[fieldNameMaj]([content]);",
+                "value":"[fieldNameMin]"
+            },
+            "controllerWhereInstanciation":{
+                "template":"where.set[primaryNameMaj]([content]);",
+                "value":"[primaryNameMin]"
+            },
+            "controllerForeignInstanciation":{
+                "template":"o.set[fieldNameMaj](repo[foreignType].findById([content]).orElseThrow());",
+                "value":"[fieldNameMin]"
+            },
+            "controllerForeignList":"model.addAttribute(\"[foreignNameMin]s\", repo[foreignType].findAll());",
+            "controllerForeignContextParam" : "",
+            "controllerForeignContextInstanciation" : "",
+            "controllerConstructors":[],
+            "controllerForeignInclude":"",
+            "controllerMethods":[
+                {
+                    "controllerMethodAnnotations":[
+                        "@PostMapping(\"/insert[classNameMin].do\")"
+                    ],
+                    "controllerMethodParameter":"String [fieldNameMin]",
+                    "controllerMethodContent":"spring/controller/springControllerInsert"
+                },
+                {
+                    "controllerMethodAnnotations":[
+                        "@GetMapping(\"/tocrud[classNameMin].do\")"
+                    ],
+                    "controllerMethodParameter":"",
+                    "controllerMethodContent":"spring/controller/springControllerRead"
+                },
+                {
+                    "controllerMethodAnnotations":[
+                        "@PostMapping(\"/update[classNameMin].do\")"
+                    ],
+                    "controllerMethodParameter":"String [fieldNameMin]",
+                    "controllerMethodContent":"spring/controller/springControllerUpdate"
+                },
+                {
+                    "controllerMethodAnnotations":[
+                        "@PostMapping(\"/delete[classNameMin].do\")"
+                    ],
+                    "controllerMethodParameter":"",
+                    "controllerMethodContent":"spring/controller/springControllerDelete"
+                }
+            ],
+            "controllerSavepath":"[projectNameMaj]/src/main/java/com/[projectNameMin]/controllers",
+            "controllerExtension":"java",
+            "controllerPackage":"com.[projectNameMin].controllers",
+            "controllerTemplate":"ControllerTemplate",
+            "controllerNameSuffix":"Controller"
+        },
+        "view":{
+            "viewForeignList":"",
+            "viewTableHeader":"<th scope=\"col\">[fieldNameFormattedMaj]</th>",
+            "foreignFieldGet":".label",
+            "viewTableLine":"<td th:text=\"${e.get[fieldNameMaj]()[foreignFieldGet]}\"></td>",
+            "viewUpdateFormForeignField":"spring/view/components/springViewUpdateForeign",
+            "viewUpdateFormField":{
+                "Integer":"spring/view/components/springViewUpdateInt",
+                "Double":"spring/view/components/springViewUpdateDouble",
+                "String":"spring/view/components/springViewUpdateString",
+                "java.time.LocalDate":"spring/view/components/springViewUpdateDate",
+                "java.time.LocalDateTime":"spring/view/components/springViewUpdateTimestamp"
+            },
+            "viewInsertFormForeignField":"spring/view/components/springViewInsertForeign",
+            "viewInsertFormField":{
+                "Integer":"spring/view/components/springViewInsertInt",
+                "Double":"spring/view/components/springViewInsertDouble",
+                "String":"spring/view/components/springViewInsertString",
+                "java.time.LocalDate":"spring/view/components/springViewInsertDate",
+                "java.time.LocalDateTime":"spring/view/components/springViewInsertTimestamp"
+            },
+            "viewName":"[classNameMin]",
+            "viewContent":"spring/view/springView",
+            "viewSavePath":"[projectNameMaj]/src/main/resources/templates",
+            "viewExtension":"html"
+        },
+        "customChanges":[],
+        "navbarLinks":{
+            "path":"[projectNameMaj]/src/main/resources/templates/layout/layout.html",
+            "link":"<a href=\"/tocrud[classNameMin].do\" class=\"nav-item nav-link\"><i class=\"fa fa-tachometer-alt me-2\"></i>[classNameformattedMaj]</a>"
+        }
+    }
+]

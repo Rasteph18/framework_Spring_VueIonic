@@ -1,0 +1,8 @@
+// Tsy hoe crack fa misy efa mba tia hanomboka nefa ilay izy mila active-na dia nianaranay fotsiny le activation
+
+1) Mila manana an'ilay code tsy activé
+2) Solona an'io jar io ilay handyman-0.4.3.jar ao amin'ny dossier lib
+
+Aleo mba P15A ihany no hanana ilay jar
+
+Happy coding !
