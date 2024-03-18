@@ -1,7 +1,4 @@
-public RedirectView update([controllerMethodParameter]){
-    [classNameMaj] o=new [classNameMaj]();
-    o.set[primaryNameMaj]([primaryParse]);
-    [controllerChangeInstanciation]
-    repo.save(o);
-    return new RedirectView("tocrud[classNameMin].do");
+public ResponseEntity<[classNameMaj]> update(@RequestBody [classNameMaj] obj){
+    
+    return ResponseEntity.ok().body(repo.save(obj));
 }

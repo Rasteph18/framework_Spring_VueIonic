@@ -1,0 +1,9 @@
+public ResponseEntity<[classNameMaj]> getById(@PathVariable("[primaryNameMin]") int [primaryNameMin]){
+    try {
+        [classNameMaj] obj = repo.findById([primaryNameMin]).get();
+    
+        return ResponseEntity.ok().body(obj);
+    } catch (Exception e) {
+        return ResponseEntity.notFound().build();
+    }
+}

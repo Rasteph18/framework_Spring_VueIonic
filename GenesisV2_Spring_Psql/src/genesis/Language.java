@@ -124,13 +124,13 @@ public class Language {
                 for(String primAnnote:getModel().getModelPrimaryFieldAnnotations()){
                     fieldAnnotes+=primAnnote+"\n";
                 }
-            }else if(entity.getFields()[i].isForeign()){
-                for(String forAnnote:getModel().getModelForeignFieldAnnotations()){
-                    fieldAnnotes+=forAnnote+"\n";
-                    fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getReferencedField()));
-                    fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getReferencedField()));
-                }
-            }
+            }//else if(entity.getFields()[i].isForeign()){
+            //     for(String forAnnote:getModel().getModelForeignFieldAnnotations()){
+            //         fieldAnnotes+=forAnnote+"\n";
+            //         fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getReferencedField()));
+            //         fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getReferencedField()));
+            //     }
+            // }
             for(String fa:getModel().getModelFieldAnnotations()){
                 fieldAnnotes+=fa+"\n";
             }
@@ -181,18 +181,18 @@ public class Language {
             fields+=fieldAnnotes;
             fields+=cf.getControllerFieldContent()+"\n";
         }
-        for(EntityField ef:entity.getFields()){
-            if(ef.isForeign()&&getController().getControllerFieldsForeign()!=null){
-                fieldAnnotes="";
-                for(String a:getController().getControllerFieldsForeign().getControllerFieldAnnotations()){
-                    fieldAnnotes+=a+"\n";
-                }
-                fields+=fieldAnnotes;
-                fields+=getController().getControllerFieldsForeign().getControllerFieldContent()+"\n";
-                fields=fields.replace("[foreignNameMaj]", HandyManUtils.majStart(ef.getType()));
-                fields=fields.replace("[foreignNameMin]", HandyManUtils.minStart(ef.getType()));
-            }
-        }
+        // for(EntityField ef:entity.getFields()){
+        //     if(ef.isForeign()&&getController().getControllerFieldsForeign()!=null){
+        //         fieldAnnotes="";
+        //         for(String a:getController().getControllerFieldsForeign().getControllerFieldAnnotations()){
+        //             fieldAnnotes+=a+"\n";
+        //         }
+        //         fields+=fieldAnnotes;
+        //         fields+=getController().getControllerFieldsForeign().getControllerFieldContent()+"\n";
+        //         fields=fields.replace("[foreignNameMaj]", HandyManUtils.majStart(ef.getType()));
+        //         fields=fields.replace("[foreignNameMin]", HandyManUtils.minStart(ef.getType()));
+        //     }
+        // }
         content=content.replace("[fields]", fields);
         String constructors="";
         String constructorParameter, foreignInstanciation;

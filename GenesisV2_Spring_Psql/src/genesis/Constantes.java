@@ -9,4 +9,6 @@ public class Constantes {
     public static final String MODEL_TEMPLATE_EXT="templ";
     public static final String CONTROLLER_TEMPLATE_EXT="templ";
     public static final String VIEW_TEMPLATE_EXT="viewtempl";
+    public static final String PATH_CONFIG_WEB="/src/main/java/com/config";
+    public static final String PATH_SOURCE_CONFIG_WEB="data_genesis/spring/config/WebConfig.java";
 }

@@ -71,7 +71,8 @@ public class Entity {
                     field=new EntityField();
                     if(column.isForeign()){
                         field.setName(HandyManUtils.minStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
-                        field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        //field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        field.setType("Integer");
                         field.setReferencedField(HandyManUtils.toCamelCase(column.getReferencedColumn()));
                     }else{
                         field.setName(HandyManUtils.toCamelCase(column.getName()));

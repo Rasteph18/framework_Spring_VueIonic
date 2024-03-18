@@ -42,7 +42,7 @@
             ],
             "modelPrimaryFieldAnnotations":[
                 "@Id",
-                "@GeneratedValue(strategy=GenerationType.AUTO)"
+                "@GeneratedValue(strategy=GenerationType.IDENTITY)"
             ],
             "modelForeignFieldAnnotations":[
                 "@jakarta.persistence.ManyToOne",
@@ -67,17 +67,22 @@
         },
         "controller":{
             "controllerImports":[
+                "import java.util.List;",
                 "import org.springframework.beans.factory.annotation.Autowired;",
-                "import org.springframework.stereotype.Controller;",
-                "import org.springframework.ui.Model;",
+                "import org.springframework.http.ResponseEntity;",
                 "import org.springframework.web.bind.annotation.GetMapping;",
+                "import org.springframework.web.bind.annotation.PathVariable;",
+                "import org.springframework.web.bind.annotation.RequestMapping;",
+                "import org.springframework.web.bind.annotation.RestController;",
                 "import org.springframework.web.bind.annotation.PostMapping;",
-                "import org.springframework.web.servlet.view.RedirectView;",
+                "import org.springframework.web.bind.annotation.RequestParam;",
+                "import org.springframework.web.bind.annotation.RequestBody;",
                 "import com.[projectNameMin].entities.[classNameMaj];",
                 "import com.[projectNameMin].entities.[classNameMaj]Repository;"
             ],
             "controllerAnnotations":[
-                "@Controller"
+                "@RestController",
+                "@RequestMapping(path = \"api/v1\")"
             ],
             "controllerExtends":"",
             "controllerName":"[classNameMaj]Controller",
@@ -115,28 +120,35 @@
             "controllerMethods":[
                 {
                     "controllerMethodAnnotations":[
-                        "@PostMapping(\"/insert[classNameMin].do\")"
+                        "@PostMapping(\"/insert[classNameMin]\")"
                     ],
-                    "controllerMethodParameter":"String [fieldNameMin]",
+                    "controllerMethodParameter":"@RequestParam(value = \"[fieldNameMin]\", required = false) String [fieldNameMin]",
                     "controllerMethodContent":"spring/controller/springControllerInsert"
                 },
                 {
                     "controllerMethodAnnotations":[
-                        "@GetMapping(\"/tocrud[classNameMin].do\")"
+                        "@GetMapping(\"/[classNameMin]s\")"
                     ],
                     "controllerMethodParameter":"",
                     "controllerMethodContent":"spring/controller/springControllerRead"
                 },
                 {
                     "controllerMethodAnnotations":[
-                        "@PostMapping(\"/update[classNameMin].do\")"
+                        "@GetMapping(\"/[classNameMin]/{[primaryNameMin]}\")"
                     ],
-                    "controllerMethodParameter":"String [fieldNameMin]",
+                    "controllerMethodParameter":"",
+                    "controllerMethodContent":"spring/controller/springControllerGetById"
+                },
+                {
+                    "controllerMethodAnnotations":[
+                        "@PostMapping(\"/update[classNameMin]\")"
+                    ],
+                    "controllerMethodParameter":"@RequestParam(value = \"[fieldNameMin]\", required = false) String [fieldNameMin]",
                     "controllerMethodContent":"spring/controller/springControllerUpdate"
                 },
                 {
                     "controllerMethodAnnotations":[
-                        "@PostMapping(\"/delete[classNameMin].do\")"
+                        "@PostMapping(\"/delete[classNameMin]/{[primaryNameMin]}\")"
                     ],
                     "controllerMethodParameter":"",
                     "controllerMethodContent":"spring/controller/springControllerDelete"
