@@ -8,6 +8,7 @@
             "integer":"int",
             "character varying":"string",
             "real":"double",
+            "double precision":"double",
             "double":"double",
             "decimal":"double",
             "numeric":"double",

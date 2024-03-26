@@ -22,6 +22,10 @@
             "java.time.LocalDateTime":"java.time.LocalDateTime.parse([value])"
         },
         "skeleton":"springpsql_skeleton",
+        "vue_skeleton": "vueionic",
+        "vue_views":"/src/views/",
+        "vue_data":"/src/data",
+        "vue_router":"/src/router/index.ts",
         "projectNameTags":[
             "[projectNameMaj]/settings.gradle",
             "[projectNameMaj]/src/main/resources/templates/layout/layout.html",

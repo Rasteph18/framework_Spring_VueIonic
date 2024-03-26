@@ -1,0 +1,6 @@
+<ion-item>
+    <ion-label position="stacked">[Field]</ion-label>
+    <ion-select v-model="formUpdate.[Field]" interface="popover" :placeholder="formUpdate.[Field]">
+        [option]
+    </ion-select>
+</ion-item>

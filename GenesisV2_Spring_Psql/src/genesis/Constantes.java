@@ -11,4 +11,6 @@ public class Constantes {
     public static final String VIEW_TEMPLATE_EXT="viewtempl";
     public static final String PATH_CONFIG_WEB="/src/main/java/com/config";
     public static final String PATH_SOURCE_CONFIG_WEB="data_genesis/spring/config/WebConfig.java";
+    public static final String RAR_EXTENSION="rar";
+    public static final String VUEIONIC_TEMPLATE_EXT="vuetempl";
 }

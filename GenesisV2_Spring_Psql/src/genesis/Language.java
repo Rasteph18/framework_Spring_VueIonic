@@ -10,6 +10,7 @@ public class Language {
     private HashMap<String, String> syntax;
     private HashMap<String, String> types, typeParsers;
     private String skeleton;
+    private String vue_skeleton, vue_views, vue_data, vue_router;
     private String[] projectNameTags;
     private CustomFile[] additionnalFiles;
     private Model model;
@@ -64,6 +65,30 @@ public class Language {
     }
     public void setSkeleton(String skeleton) {
         this.skeleton = skeleton;
+    }
+    public String getVue_skeleton() {
+        return vue_skeleton;
+    }
+    public void setVue_skeleton(String skeleton) {
+        this.vue_skeleton = skeleton;
+    }
+    public String getVue_views() {
+        return vue_views;
+    }
+    public void setVue_views(String vue) {
+        this.vue_views = vue;
+    }
+    public String getVue_data() {
+        return vue_data;
+    }
+    public void setVue_data(String data) {
+        this.vue_data = data;
+    }
+    public String getVue_router() {
+        return vue_router;
+    }
+    public void setVue_router(String router) {
+        this.vue_router = router;
     }
     public String[] getProjectNameTags() {
         return projectNameTags;
