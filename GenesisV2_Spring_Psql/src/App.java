@@ -29,8 +29,8 @@ public class App {
         File project, credentialFile, projectVue;
         String customFilePath, customFileContentOuter;
         Entity[] entities;
-        String[] models, controllers, views;
-        String modelFile, controllerFile, viewFile, customFile;
+        String[] models, controllers;
+        String modelFile, controllerFile, customFile;
         String customFileContent;
         String foreignContext;
         String customChanges, changesFile;
@@ -131,11 +131,17 @@ public class App {
                                         if(entities[i].getFields()[j].isPrimary()) pk = entities[i].getFields()[j];
                                 }
 
-                                tcontent += "<ion-row v-for=\"item in " + entities[i].getTableName() +"s\" :key=\"item." +pk.getName()+ "\">\n";
+                                tcontent += "<ion-row v-for=\"item in " + entities[i].getTableName() +"s.content\" :key=\"item." +pk.getName()+ "\">\n";
                                 for (int j = 0; j < entities[i].getFields().length; j++) {
                                         header += "<ion-col>" + entities[i].getFields()[j].getName() + "</ion-col>\n";
+                                        String suffixe = "";
+                                        if(entities[i].getFields()[j].isForeign() == true){
+                                                Entity referenced = Entity.getEntity(connect, credentials, database, language, entities[i].getFields()[j].getReferencedTable());
+                                                suffixe = referenced.firstString();
+                                        }
                                         
-                                        tcontent += "<ion-col>{{ item."+ entities[i].getFields()[j].getName() +" }}</ion-col>\n";
+                                        
+                                        tcontent += "<ion-col>{{ item."+ entities[i].getFields()[j].getName() +suffixe+" }}</ion-col>\n";
                                         
                                 }
                                 header += "<ion-col></ion-col>\n";
@@ -193,7 +199,7 @@ public class App {
                                                 dataselected += "selected" + referenced.getColumns()[0].getReferencedTable() + ": null,\n";
                                                 dataentity += referenced.getColumns()[0].getReferencedTable() + "s: [],\n";
 
-                                                String optionUpdate = "<ion-select v-model=\"formUpdate." + referenced.getColumns()[0].getReferencedTable() + "\" interface=\"popover\" :placeholder=\"formUpdate."+ referenced.getColumns()[0].getReferencedTable() +"\">\n";
+                                                String optionUpdate = "<ion-select v-model=\"formUpdate." + referenced.getColumns()[0].getReferencedTable() + "." + referenced.getPrimaryField().getName() + "\" interface=\"popover\" :placeholder=\"formUpdate."+ referenced.getColumns()[0].getReferencedTable() + "." + label +"\">\n";
                                                 optionUpdate += "<ion-select-option v-for=\" option in " + referenced.getColumns()[0].getReferencedTable() + "s \" :key=\"option." + pk.getName() + "\" :value=\"option." + pk.getName() + "\">";
                                                 optionUpdate += "{{option." + label + "}}";
                                                 optionUpdate += "</ion-select-option>\n";
@@ -203,6 +209,19 @@ public class App {
                                                 String apiselect = HandyManUtils.getFileContent(Constantes.DATA_PATH + "/" + language.getVue_skeleton() + "/Fkselect." + Constantes.VUEIONIC_TEMPLATE_EXT);
                                                 apiselect = apiselect.replace("[entityName]", referenced.getColumns()[0].getReferencedTable());
                                                 apisel += apiselect + "\n";
+
+                                                if( j == entities[i].getFields().length - 1){
+                                                        fieldFormAjout += entities[i].getFields()[j].getName() + ":''\n";
+                                                        fieldFormUpdate += entities[i].getFields()[j].getName() + ":''\n";
+                                                        fieldHandleAjout += entities[i].getFields()[j].getName() + ": form.value." + entities[i].getFields()[j].getName() + "\n";
+                                                        fieldHandleUpdate += entities[i].getFields()[j].getName() + ": formUpdate.value." + entities[i].getFields()[j].getName() + "." + referenced.getPrimaryField().getName() + "\n";
+                                                } else {
+                                                        fieldFormAjout += entities[i].getFields()[j].getName() + ":'',\n";
+                                                        fieldFormUpdate += entities[i].getFields()[j].getName() + ":'',\n";
+                                                        fieldHandleAjout += entities[i].getFields()[j].getName() + ": form.value." + entities[i].getFields()[j].getName() + ",\n";
+                                                        fieldHandleUpdate += entities[i].getFields()[j].getName() + ": formUpdate.value." + entities[i].getFields()[j].getName() + "." + referenced.getPrimaryField().getName()  + ",\n";
+                                                }
+                                                continue;
                                                 
                                         } else{
                                                 if(entities[i].getFields()[j].getType().equalsIgnoreCase("Integer") || entities[i].getFields()[j].getType().equalsIgnoreCase("Double") || entities[i].getFields()[j].getType().equalsIgnoreCase("Float")){
@@ -304,11 +323,14 @@ public class App {
                     entities[i].initialize(connect, credentials, database, language);
                 }
                 models = new String[entities.length];
+                String[] dtos = new String[entities.length];
                 controllers = new String[entities.length];
                 // views = new String[entities.length];
                 navLink = "";
                 for (int i = 0; i < models.length; i++) {
                     models[i] = language.generateModel(entities[i], projectName);
+                    dtos[i] = language.generateDTO(entities[i], projectName);
+                //     System.out.println(dtos[i]);
                     controllers[i] = language.generateController(entities[i], database, credentials, projectName);
                 //     views[i] = language.generateView(entities[i], projectName);
                     modelFile = language.getModel().getModelSavePath().replace("[projectNameMaj]",
@@ -322,6 +344,9 @@ public class App {
                 //     viewFile = viewFile.replace("[classNameMin]", HandyManUtils.minStart(entities[i].getClassName()));
                     modelFile = modelFile.replace("[projectNameMin]", HandyManUtils.minStart(projectName));
                     controllerFile = controllerFile.replace("[projectNameMin]", HandyManUtils.minStart(projectName));
+                    String dtoFile = modelFile+"/" + HandyManUtils.majStart(entities[i].getClassName()) + "DTO."
+                    + language.getModel().getModelExtension();
+
                     modelFile += "/" + HandyManUtils.majStart(entities[i].getClassName()) + "."
                             + language.getModel().getModelExtension();
                     controllerFile += "/" + HandyManUtils.majStart(entities[i].getClassName())
@@ -329,7 +354,9 @@ public class App {
                             + language.getController().getControllerExtension();
                 //     viewFile += "/" + language.getView().getViewName() + "." + language.getView().getViewExtension();
                 //     viewFile = viewFile.replace("[classNameMin]", HandyManUtils.minStart(entities[i].getClassName()));
+                // System.out.println(dtoFile);
                     HandyManUtils.createFile(modelFile);
+                    HandyManUtils.createFile(dtoFile);
                     for (CustomFile f : language.getModel().getModelAdditionnalFiles()) {
                         foreignContext = "";
                         for (EntityField ef : entities[i].getFields()) {
@@ -361,6 +388,7 @@ public class App {
                     HandyManUtils.createFile(controllerFile);
                 //     HandyManUtils.createFile(viewFile);
                     HandyManUtils.overwriteFileContent(modelFile, models[i]);
+                    HandyManUtils.overwriteFileContent(dtoFile, dtos[i]);
                     HandyManUtils.overwriteFileContent(controllerFile, controllers[i]);
                 //     HandyManUtils.overwriteFileContent(viewFile, views[i]);
                     navLink += language.getNavbarLinks().getLink();

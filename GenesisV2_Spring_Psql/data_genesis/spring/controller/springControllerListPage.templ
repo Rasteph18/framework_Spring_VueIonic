@@ -1,0 +1,4 @@
+public Page<[classNameMaj]> getAll[classNameMaj](@PathVariable("numPage") int numPage){
+    Pageable pageable = PageRequest.of(numPage, 5);
+    return repo.findAll(pageable);
+}

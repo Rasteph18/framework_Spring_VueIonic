@@ -71,8 +71,8 @@ public class Entity {
                     field=new EntityField();
                     if(column.isForeign()){
                         field.setName(HandyManUtils.minStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
-                        //field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
-                        field.setType("Integer");
+                        field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        //field.setType("Integer");
                         field.setReferencedField(HandyManUtils.toCamelCase(column.getReferencedColumn()));
                         field.setReferencedTable(column.getReferencedTable());
                     }else{
@@ -172,5 +172,14 @@ public class Entity {
                 connect.close();
             }
         }
+    }
+
+    public String firstString(){
+        for (EntityField field : fields) {
+            if(field.getType().equalsIgnoreCase("string")){
+                return "."+field.getName();
+            }
+        }  
+        return "";  
     }
 }
