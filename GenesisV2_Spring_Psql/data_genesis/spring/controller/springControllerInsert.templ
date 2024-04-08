@@ -1,4 +1,7 @@
-public [classNameMaj] insert(@RequestBody [classNameMaj] obj){
+public [classNameMaj] insert(@RequestBody [classNameMaj]DTO obj){
+    [classNameMaj] nv = new [classNameMaj]();
 
-    return repo.save(obj);
+    [sets]
+
+    return repo.save(nv);
 }

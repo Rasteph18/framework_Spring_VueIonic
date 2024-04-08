@@ -1,0 +1,9 @@
+export interface Entity {
+  EntityName: string;
+}
+
+const entities: Entity[] = [
+  [dataEntity]
+];
+
+export const getEntities = () => entities;

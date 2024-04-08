@@ -1,6 +1,6 @@
 package genesis;
 
-public class EntityField {
+public class EntityField extends EntityColumn{
     private String name;
     private String type;
     private boolean primary;

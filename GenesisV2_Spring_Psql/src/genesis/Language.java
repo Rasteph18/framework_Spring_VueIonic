@@ -10,6 +10,7 @@ public class Language {
     private HashMap<String, String> syntax;
     private HashMap<String, String> types, typeParsers;
     private String skeleton;
+    private String vue_skeleton, vue_views, vue_data, vue_router;
     private String[] projectNameTags;
     private CustomFile[] additionnalFiles;
     private Model model;
@@ -64,6 +65,30 @@ public class Language {
     }
     public void setSkeleton(String skeleton) {
         this.skeleton = skeleton;
+    }
+    public String getVue_skeleton() {
+        return vue_skeleton;
+    }
+    public void setVue_skeleton(String skeleton) {
+        this.vue_skeleton = skeleton;
+    }
+    public String getVue_views() {
+        return vue_views;
+    }
+    public void setVue_views(String vue) {
+        this.vue_views = vue;
+    }
+    public String getVue_data() {
+        return vue_data;
+    }
+    public void setVue_data(String data) {
+        this.vue_data = data;
+    }
+    public String getVue_router() {
+        return vue_router;
+    }
+    public void setVue_router(String router) {
+        this.vue_router = router;
     }
     public String[] getProjectNameTags() {
         return projectNameTags;
@@ -124,13 +149,13 @@ public class Language {
                 for(String primAnnote:getModel().getModelPrimaryFieldAnnotations()){
                     fieldAnnotes+=primAnnote+"\n";
                 }
-            }//else if(entity.getFields()[i].isForeign()){
-            //     for(String forAnnote:getModel().getModelForeignFieldAnnotations()){
-            //         fieldAnnotes+=forAnnote+"\n";
-            //         fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getReferencedField()));
-            //         fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getReferencedField()));
-            //     }
-            // }
+            }else if(entity.getFields()[i].isForeign()){
+                 for(String forAnnote:getModel().getModelForeignFieldAnnotations()){
+                     fieldAnnotes+=forAnnote+"\n";
+                     fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getReferencedField()));
+                     fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getReferencedField()));
+                 }
+             }
             for(String fa:getModel().getModelFieldAnnotations()){
                 fieldAnnotes+=fa+"\n";
             }
@@ -155,16 +180,91 @@ public class Language {
         content=content.replace("[tableName]", entity.getTableName());
         return content;
     }
+
+    public String generateDTO(Entity entity, String projectName) throws IOException, Exception , Throwable{
+        String content=HandyManUtils.getFileContent(Constantes.DATA_PATH+"/"+getModel().getModelTemplate()+"."+Constantes.MODEL_TEMPLATE_EXT);
+        content=content.replace("[namespace]", getSyntax().get("namespace"));
+        content=content.replace("[namespaceStart]", getSyntax().get("namespaceStart"));
+        content=content.replace("[namespaceEnd]", getSyntax().get("namespaceEnd"));
+        content=content.replace("[package]", getModel().getModelPackage());
+        // String imports="";
+        // for(String i:getModel().getModelImports()){
+        //     imports+=i+"\n";
+        // }
+        content=content.replace("[imports]", "");
+        // String annotes="";
+        // for(String a:getModel().getModelAnnotations()){
+        //     annotes+=a+"\n";
+        // }
+        content=content.replace("[classAnnotations]", "");
+        content=content.replace("[extends]", getModel().getModelExtends());
+        // String constructors="";
+        // for(String c:getModel().getModelConstructors()){
+        //     constructors+=c+"\n";
+        // }
+        content=content.replace("[constructors]", "");
+        String fields="", fieldAnnotes;
+        for(int i=0;i<entity.getFields().length;i++){
+            fieldAnnotes="";
+            // if(entity.getFields()[i].isPrimary() == false){
+                if(entity.getFields()[i].isForeign() == true){
+                    fieldAnnotes+="public Integer "+entity.getFields()[i].getName()+";\n";
+                }else{
+                    fieldAnnotes+="public "+entity.getFields()[i].getType()+" "+entity.getFields()[i].getName()+";\n";
+                }
+
+                // for(String forAnnote:getModel().getModelForeignFieldAnnotations()){
+                //     System.out.println(forAnnote);
+                //     fieldAnnotes+=forAnnote+"\n";
+                //     fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getReferencedField()));
+                //     fieldAnnotes=fieldAnnotes.replace("[referencedFieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getReferencedField()));
+                // }
+            // }
+
+            // for(String fa:getModel().getModelFieldAnnotations()){
+            //     fieldAnnotes+=fa+"\n";
+            // }
+            fields+=fieldAnnotes;
+            // fields+=getModel().getModelFieldContent()+"\n";
+            // fields+=getModel().getModelGetter()+"\n";
+            // fields+=getModel().getModelSetter()+"\n";
+            // fields=fields.replace("[columnName]", entity.getColumns()[i].getName());
+            // fields=fields.replace("[fieldType]", entity.getFields()[i].getType());
+            // fields=fields.replace("[modelFieldCase]", getModel().getModelFieldCase());
+            // fields=fields.replace("[fieldNameMin]", HandyManUtils.minStart(entity.getFields()[i].getName()));
+            // fields=fields.replace("[fieldNameMaj]", HandyManUtils.majStart(entity.getFields()[i].getName()));
+        }
+        content=content.replace("[fields]", fields);
+        content=content.replace("[projectNameMin]", HandyManUtils.minStart(projectName));
+        content=content.replace("[projectNameMaj]", HandyManUtils.majStart(projectName));
+        content=content.replace("[classNameMaj]", HandyManUtils.majStart(entity.getClassName())+"DTO");
+        content=content.replace("[modelFieldCase]", getModel().getModelFieldCase());
+        content=content.replace("[primaryFieldType]", entity.getPrimaryField().getType());
+        content=content.replace("[primaryFieldNameMin]", HandyManUtils.minStart(entity.getPrimaryField().getName()));
+        content=content.replace("[primaryFieldNameMaj]", HandyManUtils.majStart(entity.getPrimaryField().getName()));
+        content=content.replace("[tableName]", entity.getTableName());
+        return content;
+    }
+
+
+
+
+
+
+
     public String generateController(Entity entity, Database database, Credentials credentials, String projectName) throws IOException, Exception , Throwable{
         String content=HandyManUtils.getFileContent(Constantes.DATA_PATH+"/"+getController().getControllerTemplate()+"."+Constantes.CONTROLLER_TEMPLATE_EXT);
         content=content.replace("[namespace]", getSyntax().get("namespace"));
         content=content.replace("[namespaceStart]", getSyntax().get("namespaceStart"));
         content=content.replace("[namespaceEnd]", getSyntax().get("namespaceEnd"));
         content=content.replace("[package]", getController().getControllerPackage());
+        
         String imports="";
         for(String i:getController().getControllerImports()){
             imports+=i+"\n";
+            // System.out.println(i);
         }
+        imports+="import com.[projectNameMin].entities.[classNameMaj]DTO;\n";
         content=content.replace("[imports]", imports);
         String annotes="";
         for(String a:getController().getControllerAnnotations()){
@@ -181,18 +281,37 @@ public class Language {
             fields+=fieldAnnotes;
             fields+=cf.getControllerFieldContent()+"\n";
         }
-        // for(EntityField ef:entity.getFields()){
-        //     if(ef.isForeign()&&getController().getControllerFieldsForeign()!=null){
-        //         fieldAnnotes="";
-        //         for(String a:getController().getControllerFieldsForeign().getControllerFieldAnnotations()){
-        //             fieldAnnotes+=a+"\n";
-        //         }
-        //         fields+=fieldAnnotes;
-        //         fields+=getController().getControllerFieldsForeign().getControllerFieldContent()+"\n";
-        //         fields=fields.replace("[foreignNameMaj]", HandyManUtils.majStart(ef.getType()));
-        //         fields=fields.replace("[foreignNameMin]", HandyManUtils.minStart(ef.getType()));
-        //     }
-        // }
+        //deb manao repository
+
+        String sets = "";
+        String sets_update = "";
+
+        for(EntityField ef:entity.getFields()){
+            if(ef.isForeign()&&getController().getControllerFieldsForeign()!=null){
+                fieldAnnotes="";
+                for(String a:getController().getControllerFieldsForeign().getControllerFieldAnnotations()){
+                    fieldAnnotes+=a+"\n";
+                }
+                fields+=fieldAnnotes;
+                fields+=getController().getControllerFieldsForeign().getControllerFieldContent()+"\n";
+                fields=fields.replace("[foreignNameMaj]", HandyManUtils.majStart(ef.getType()));
+                fields=fields.replace("[foreignNameMin]", HandyManUtils.minStart(ef.getType()));
+
+                String arg_maj = HandyManUtils.majStart(ef.getType());
+                String arg_min = HandyManUtils.minStart(ef.getType());
+                String repo = "repo"+ arg_maj;
+
+                sets+="nv.set"+arg_maj+"("+repo+".findById(obj."+arg_min+").get());\n";
+                sets_update+="nv.set"+arg_maj+"("+repo+".findById(obj."+arg_min+").get());\n";
+            }else{
+                if(ef.isPrimary() == false){
+                    sets+="nv.set"+HandyManUtils.majStart(ef.getName())+"(obj."+ef.getName()+");\n";
+                }
+                sets_update+="nv.set"+HandyManUtils.majStart(ef.getName())+"(obj."+ef.getName()+");\n";
+            }
+            
+        }
+        //fin manao repository
         content=content.replace("[fields]", fields);
         String constructors="";
         String constructorParameter, foreignInstanciation;
@@ -214,12 +333,17 @@ public class Language {
         content=content.replace("[constructors]", constructors);
         String methods="", methodAnnotes, methodParameters;
         String changeInstanciation, whereInstanciation, foreignList, foreignInclude;
+        
         for(ControllerMethod m:getController().getControllerMethods()){
             methodAnnotes="";
+            
             for(String ma:m.getControllerMethodAnnotations()){
                 methodAnnotes+=ma+"\n";
+                // System.out.println(ma);
             }
+            
             methods+=methodAnnotes;
+            
             methodParameters="";
             for(EntityField ef:entity.getFields()){
                 methodParameters+=m.getControllerMethodParameter();
@@ -232,6 +356,7 @@ public class Language {
             }
             methods+=HandyManUtils.getFileContent(Constantes.DATA_PATH+"/"+m.getControllerMethodContent()+"."+Constantes.CONTROLLER_TEMPLATE_EXT);
             methods=methods.replace("[controllerMethodParameter]", methodParameters);
+            
             changeInstanciation="";
             foreignList="";
             foreignInclude="";
@@ -264,6 +389,8 @@ public class Language {
             whereInstanciation+=getController().getControllerWhereInstanciation().get("template");
             whereInstanciation=whereInstanciation.replace("[content]", getTypeParsers().get(entity.getPrimaryField().getType()));
             whereInstanciation=whereInstanciation.replace("[value]", getController().getControllerWhereInstanciation().get("value"));
+        
+
             methods=methods.replace("[primaryParse]", getTypeParsers().get(entity.getPrimaryField().getType()).replace("[value]", "[primaryNameMin]"));
             methods=methods.replace("[controllerChangeInstanciation]", changeInstanciation);
             methods=methods.replace("[controllerWhereInstanciation]", whereInstanciation);
@@ -283,6 +410,12 @@ public class Language {
             methods=methods.replace("[pwd]", credentials.getPwd());
             methods=methods.replace("[databaseUseSSL]", String.valueOf(credentials.isUseSSL()));
             methods=methods.replace("[databaseAllowKey]", String.valueOf(credentials.isAllowPublicKeyRetrieval()));
+            
+            
+            methods=methods.replace("[sets]", sets);
+            methods=methods.replace("[sets_update]", sets_update);
+            
+
         }
         content=content.replace("[methods]", methods);
         content=content.replace("[controllerNameMaj]", getController().getControllerName());

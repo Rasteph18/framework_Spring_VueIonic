@@ -1,0 +1,6 @@
+<ion-item>
+    <ion-label position="stacked">[Field]</ion-label>
+    <ion-select v-model="selected[Field]" interface="popover" placeholder="Choose">
+        [option]
+    </ion-select>
+</ion-item>

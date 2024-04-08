@@ -1,4 +1,7 @@
-public ResponseEntity<[classNameMaj]> update(@RequestBody [classNameMaj] obj){
-    
-    return ResponseEntity.ok().body(repo.save(obj));
+public ResponseEntity<[classNameMaj]> update(@RequestBody [classNameMaj]DTO obj){
+    [classNameMaj] nv = new [classNameMaj]();
+
+    [sets_update]
+
+    return ResponseEntity.ok().body(repo.save(nv));
 }

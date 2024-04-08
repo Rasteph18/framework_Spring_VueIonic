@@ -71,9 +71,10 @@ public class Entity {
                     field=new EntityField();
                     if(column.isForeign()){
                         field.setName(HandyManUtils.minStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
-                        //field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
-                        field.setType("Integer");
+                        field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        //field.setType("Integer");
                         field.setReferencedField(HandyManUtils.toCamelCase(column.getReferencedColumn()));
+                        field.setReferencedTable(column.getReferencedTable());
                     }else{
                         field.setName(HandyManUtils.toCamelCase(column.getName()));
                         field.setType(language.getTypes().get(database.getTypes().get(column.getType())));
@@ -103,5 +104,82 @@ public class Entity {
                 connect.close();
             }
         }
+    }
+
+
+    //---------------------------------------------------------------------------------------
+
+
+    public static Entity getEntity(Connection connex, Credentials credentials, Database database, Language language, String nametable) throws ClassNotFoundException, SQLException, Exception{
+        boolean opened=false;
+        Connection connect=connex;
+        Entity response = new Entity();
+        if(connect==null){
+            connect=database.getConnexion(credentials);
+            opened=true;
+        }
+        String query=database.getGetcolumnsQuery().replace("[tableName]", nametable);
+        PreparedStatement statement=connect.prepareStatement(query);
+        try{
+            Vector<EntityColumn> listeCols=new Vector<>();
+            Vector<EntityField> listeFields=new Vector<>();
+            EntityColumn column;
+            EntityField field;
+            try(ResultSet result=statement.executeQuery()){
+                response.setClassName(HandyManUtils.majStart(HandyManUtils.toCamelCase(nametable)));
+                while(result.next()){
+                    column=new EntityColumn();
+                    column.setName(result.getString("column_name"));
+                    column.setType(result.getString("data_type"));
+                    column.setPrimary(result.getBoolean("is_primary"));
+                    column.setForeign(result.getBoolean("is_foreign"));
+                    column.setReferencedTable(result.getString("foreign_table_name"));
+                    column.setReferencedColumn(result.getString("foreign_column_name"));
+                    field=new EntityField();
+                    if(column.isForeign()){
+                        field.setName(HandyManUtils.minStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        //field.setType(HandyManUtils.majStart(HandyManUtils.toCamelCase(column.getReferencedTable())));
+                        field.setType("Integer");
+                        field.setReferencedField(HandyManUtils.toCamelCase(column.getReferencedColumn()));
+                        field.setReferencedTable(column.getReferencedTable());
+                    }else{
+                        field.setName(HandyManUtils.toCamelCase(column.getName()));
+                        field.setType(language.getTypes().get(database.getTypes().get(column.getType())));
+                    }
+                    field.setPrimary(column.isPrimary());
+                    field.setForeign(column.isForeign());
+                    if(field.isPrimary()){
+                        response.setPrimaryField(field);
+                    }
+                    listeCols.add(column);
+                    listeFields.add(field);
+                }
+                EntityColumn[] cols=new EntityColumn[listeCols.size()];
+                for(int i=0;i<cols.length;i++){
+                    cols[i]=listeCols.get(i);
+                }
+                EntityField[] fiels=new EntityField[listeFields.size()];
+                for(int i=0;i<fiels.length;i++){
+                    fiels[i]=listeFields.get(i);
+                }
+                response.setColumns(cols);
+                response.setFields(fiels);
+                return response;
+            }
+        }finally{
+            statement.close();
+            if(opened){
+                connect.close();
+            }
+        }
+    }
+
+    public String firstString(){
+        for (EntityField field : fields) {
+            if(field.getType().equalsIgnoreCase("string")){
+                return "."+field.getName();
+            }
+        }  
+        return "";  
     }
 }

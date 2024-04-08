@@ -1,0 +1,52 @@
+<template>
+  <ion-page>
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-title> [projectNameMaj] </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content :fullscreen="true">
+      <ion-refresher slot="fixed" @ionRefresh="refresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+      <ion-header collapse="condense">
+        <ion-toolbar>
+          <ion-title size="large"> [projectNameMaj] </ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-list>
+        <ion-item v-for="item in entities" :href="`/${item.EntityName}`" :key="item.EntityName">{{ item.EntityName }}</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-page>
+</template>
+
+<script setup lang="ts">
+import {
+  IonContent,
+  IonHeader,
+  IonList,
+  IonPage,
+  IonRefresher,
+  IonRefresherContent,
+  IonTitle,
+  IonToolbar,
+  IonItem
+} from '@ionic/vue';
+import { getEntities, Entity } from '@/data/entity';
+import { ref } from 'vue';
+
+const entities = ref<Entity[]>(getEntities());
+
+const refresh = (ev: CustomEvent) => {
+  setTimeout(() => {
+    ev.detail.complete();
+  }, 3000);
+};
+
+
+
+</script>

@@ -1,0 +1,263 @@
+<template>
+  <ion-page>
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-title> [projectNameMaj] </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content :fullscreen="true">
+
+      <ion-header collapse="condense">
+        <ion-toolbar>
+          <ion-title size="large"> [projectNameMaj] </ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <form @submit.prevent="handleSubmit">
+        [formContent]
+        <ion-button expand="block" type="submit">Add</ion-button>
+      </form>
+
+      <div><h1>List of [entityName]</h1></div>
+
+      <ion-grid>
+        <ion-row>
+            [TableHeader]
+        </ion-row>
+        
+            [TableContent]
+        
+        <div class="pagination">
+          <ion-button v-for="pageNumber in totalPages" :key="pageNumber" @click="fetchData(pageNumber-1)">
+            {{ pageNumber }}
+          </ion-button>
+        </div>
+
+      </ion-grid>
+
+      <ion-modal id="modif-modal">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Update</ion-title>
+            <ion-buttons slot="end">
+              <ion-button @click="closeModal">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <form @submit.prevent="handleUpdate">
+            [formUpdateContent]
+            <ion-button expand="block" type="submit">submit</ion-button>
+          </form>
+        </ion-content>
+      </ion-modal>
+
+    </ion-content>
+  </ion-page>
+</template>
+
+<script>
+import {
+  IonContent,
+        IonHeader,
+        IonList,
+        IonInput,
+        IonItem,
+        IonPage,
+        IonRefresher,
+        IonRefresherContent,
+        IonTitle,
+        IonToolbar,
+        IonButton,
+        IonGrid,
+        IonRow,
+        IonCol,
+        IonSelect,
+        IonSelectOption,
+        modalController,
+        IonModal
+        
+} from '@ionic/vue';
+import axios from 'axios';
+import { ref } from 'vue';
+
+export default {
+    components: {
+        IonContent,
+        IonHeader,
+        IonList,
+        IonInput,
+        IonItem,
+        IonPage,
+        IonRefresher,
+        IonRefresherContent,
+        IonTitle,
+        IonToolbar,
+        IonButton,
+        IonGrid,
+        IonRow,
+        IonCol,
+        IonSelect,
+        IonSelectOption,
+        modalController,
+        IonModal
+
+    },
+    data() {
+        return {
+            currentPage: 0,
+            totalPages: 0,
+            [dataselection]
+            [dataentity]
+        };
+    },
+    mounted() {
+
+        this.fetchData(this.currentPage);
+
+        // Effectuer une requête GET à l'API
+        axios.get('http://localhost:8080/api/v1/[entityName]s')
+            .then(response => {
+                // Mettre à jour les données avec la réponse de l'API
+                this.[entityName]s = response.data;
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données :', error);
+            });
+            [fkapi]
+
+    },
+
+    methods: {
+
+    fetchData(pageNumber) {
+      axios.get(`http://localhost:8080/api/v1/[entityName]s/${pageNumber}`)
+        .then(response => {
+          this.[entityName]s = response.data;
+          console.log(this.chauffeurs);
+          this.totalPages = this.[entityName]s.totalPages;
+          this.currentPage = pageNumber;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des données :', error);
+        });
+    }
+    },
+
+    setup() {
+    const form = ref({
+      [FieldFormAjout]
+    });
+
+    const formUpdate = ref({
+      [FieldFormUpdate]
+    });
+
+    const handleSubmit = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/insert[entityName]', {
+          [FieldHandleAjout]
+        });
+
+        console.log('Réponse de l\'API:', response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error);
+      }
+    };
+
+    const handleDelete = async (id) => {
+      try {
+        const response = await axios.post(`http://localhost:8080/api/v1/delete[entityName]/${id}`, {
+        });
+
+        console.log('Réponse de l\'API:', response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error);
+      }
+    };
+
+    const handleUpdate = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/update[entityName]', {
+          [FieldHandleUpdate]
+
+        });
+
+        console.log('Réponse de l\'API:', response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error);
+      }
+    };
+
+
+    const openModal = async (id) => {
+      const modal = document.getElementById('modif-modal');
+      if (modal) {
+        modal.present();
+      }
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/[entityName]/${id}`, {
+        });
+        formUpdate.value = response.data;
+        console.log('Réponse de l\'API:', response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error);
+      }
+    };
+
+    
+    const closeModal = async () => {
+      const modal = document.getElementById('modif-modal');
+      if (modal) {
+        modal.dismiss();
+      }
+    };
+
+    return {
+      form,
+      formUpdate,
+      handleSubmit,
+      handleDelete,
+      openModal,
+      closeModal,
+      handleUpdate
+    };
+
+ 
+  }
+
+}
+
+
+
+</script>
+
+<style scoped>
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-button {
+  border: 1px solid #007bff;
+  background-color: transparent;
+  color: #007bff;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pagination-button:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.pagination-button.active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+</style>
